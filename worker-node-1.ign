@@ -32,5 +32,13 @@
         "mode": 420
       }
     ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "contents": "[Unit]\nDescription=Install required packages\n\n\n[Service]\nType=oneshot\nExecStart=/bin/yum -y install openipmi git\n",
+        "name": "package-install.service"
+      }
+    ]
   }
 }

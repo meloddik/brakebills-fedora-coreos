@@ -17,3 +17,14 @@ storage:
       mode: 0644
       contents:
         inline: worker-node-1.brakebills.io
+systemd:
+  units:
+    - name: "package-install.service"
+      contents: |
+        [Unit]
+        Description=Install required packages
+
+
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/yum -y install openipmi git

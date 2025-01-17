@@ -3,7 +3,7 @@ version: 1.6.0
 kernel_arguments:
   should_exist:
     - "allow_unsupported_modules 1"
-filesystems
+filesystems:
   wipe_filesystem: true
 passwd:
   users:

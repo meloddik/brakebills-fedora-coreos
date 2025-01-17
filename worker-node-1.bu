@@ -1,8 +1,6 @@
 variant: fcos
 version: 1.6.0
 kernel_arguments:
-  should_exist:
-    - "allow_unsupported_modules 1"
 passwd:
   users:
     - name: core
@@ -17,6 +15,10 @@ storage:
       mode: 0644
       contents:
         inline: worker-node-1.brakebills.io
+    - path: /etc/modprobe.d/ixgbe.conf
+      mode: 0644
+      contents:
+        inline: options ixgbe allow_unsupported_sfp=1
 systemd:
   units:
     - name: "package-install.service"
@@ -24,7 +26,6 @@ systemd:
         [Unit]
         Description=Install required packages
 
-
         [Service]
         Type=oneshot
-        ExecStart=/bin/yum -y install openipmi git
+        ExecStart=/bin/rpm-ostree -y install OpenIPMI git

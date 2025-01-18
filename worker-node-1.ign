@@ -35,13 +35,5 @@
         "mode": 420
       }
     ]
-  },
-  "systemd": {
-    "units": [
-      {
-        "contents": "[Unit]\nDescription=Install required packages\n\n[Service]\nType=oneshot\nExecStart=/bin/rpm-ostree -y install OpenIPMI git\n",
-        "name": "package-install.service"
-      }
-    ]
   }
 }

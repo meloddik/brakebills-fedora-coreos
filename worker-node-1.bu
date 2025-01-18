@@ -18,13 +18,3 @@ storage:
       mode: 0644
       contents:
         inline: options ixgbe allow_unsupported_sfp=1
-systemd:
-  units:
-    - name: "package-install.service"
-      contents: |
-        [Unit]
-        Description=Install required packages
-
-        [Service]
-        Type=oneshot
-        ExecStart=/bin/rpm-ostree -y install OpenIPMI git

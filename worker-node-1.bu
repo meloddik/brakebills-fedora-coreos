@@ -18,3 +18,8 @@ storage:
       mode: 0644
       contents:
         inline: options ixgbe allow_unsupported_sfp=1
+    - path: /etc/systemd/resolved.conf
+      mode: 0644
+      overwrite: true
+      contents:
+        source: http://192.168.1.152/resolved-conf

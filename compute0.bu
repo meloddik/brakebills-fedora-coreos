@@ -23,6 +23,36 @@ storage:
       overwrite: true
       contents:
         source: http://192.168.1.152/resolved-conf
+    - path: /etc/NetworkManager/system-connections/eno1.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=eno1
+          type=ethernet
+          interface-name=eno1
+          [bond]
+          miimon=100
+          mode=802.3ad
+          [ipv4]
+          method=disabled
+          [ipv6]
+          method=disabled
+    - path: /etc/NetworkManager/system-connections/eno2.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=eno2
+          type=ethernet
+          interface-name=eno2
+          [bond]
+          miimon=100
+          mode=802.3ad
+          [ipv4]
+          method=disabled
+          [ipv6]
+          method=disabled
     - path: /etc/NetworkManager/system-connections/bond0.nmconnection
       mode: 0600
       contents:
@@ -39,23 +69,59 @@ storage:
           dns-search=brakebills.io
           may-fail=false
           method=auto
-    - path: /etc/NetworkManager/system-connections/bond0-slave-enp1s0f0.nmconnection
+          [ipv6]
+          method=disabled
+    - path: /etc/NetworkManager/system-connections/bond0-slave-eno1.nmconnection
       mode: 0600
       contents:
         inline: |
           [connection]
-          id=bond0-slave-enp1s0f0
+          id=bond0-slave-eno1
           type=ethernet
-          interface-name=enp1s0f0
+          interface-name=eno1
           master=bond0
           slave-type=bond
-    - path: /etc/NetworkManager/system-connections/bond0-slave-enp1s0f1.nmconnection
+    - path: /etc/NetworkManager/system-connections/bond0-slave-eno2.nmconnection
       mode: 0600
       contents:
         inline: |
           [connection]
-          id=bond0-slave-enp1s0f1
+          id=bond0-slave-eno2
           type=ethernet
-          interface-name=enp1s0f1
+          interface-name=eno2
           master=bond0
           slave-type=bond
+    - path: /usr/bin/reset-ixgbe
+      mode: 0644
+      contents: |
+        #!/bin/bash
+        rmmod ixgbe
+        modprobe ixgbe && systemctl restart NetworkManager
+    - path: /etc/systemd/system/reset-ixgbe.service
+      mode: 0644
+      contents: |
+        [Unit]
+        Description=Reset ixgbe module arguments
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/reset-ixgbe
+
+        [Install]
+        WantedBy=multi-user.target
+systemd:
+  units:
+    - name: reset-ixgbe.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Reset ixgbe module arguments
+        After=network.target
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/bin/reset-ixgbe
+
+        [Install]
+        WantedBy=multi-user.target

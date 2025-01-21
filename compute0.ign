@@ -22,7 +22,7 @@
         "path": "/etc/hostname",
         "contents": {
           "compression": "",
-          "source": "data:,worker-node-1.brakebills.io"
+          "source": "data:,compute0.ocp4.brakebills.io"
         },
         "mode": 420
       },
@@ -41,6 +41,30 @@
           "source": "http://192.168.1.152/resolved-conf"
         },
         "mode": 420
+      },
+      {
+        "path": "/etc/NetworkManager/system-connections/bond0.nmconnection",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/yyJwaqEMAwA7/kXS32+g7DkS8RDbCOGbRJpuwv+/eKyp5lhluRmnLq4rSAZN7ccoV8nfxXEOtedEg9Gyr+93FhBRdQNxxhBPTPO8S9MlGGR8/2/QraGYwxjmGKYH3cOjammA7dKT96klBbEQekadpKCO5XGoNwPz0iv7vAJAAD//6tT4wueAAAA"
+        },
+        "mode": 384
+      },
+      {
+        "path": "/etc/NetworkManager/system-connections/bond0-slave-enp1s0f0.nmconnection",
+        "contents": {
+          "compression": "",
+          "source": "data:,%5Bconnection%5D%0Aid%3Dbond0-slave-enp1s0f0%0Atype%3Dethernet%0Ainterface-name%3Denp1s0f0%0Amaster%3Dbond0%0Aslave-type%3Dbond%0A"
+        },
+        "mode": 384
+      },
+      {
+        "path": "/etc/NetworkManager/system-connections/bond0-slave-eno2.nmconnection",
+        "contents": {
+          "compression": "",
+          "source": "data:,%5Bconnection%5D%0Aid%3Dbond0-slave-eno2%0Atype%3Dethernet%0Ainterface-name%3Deno2%0Amaster%3Dbond0%0Aslave-type%3Dbond%0A"
+        },
+        "mode": 384
       }
     ]
   }

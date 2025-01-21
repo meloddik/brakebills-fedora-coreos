@@ -13,7 +13,7 @@ storage:
     - path: /etc/hostname
       mode: 0644
       contents:
-        inline: worker-node-1.brakebills.io
+        inline: compute0.ocp4.brakebills.io
     - path: /etc/modprobe.d/ixgbe.conf
       mode: 0644
       contents:
@@ -23,3 +23,39 @@ storage:
       overwrite: true
       contents:
         source: http://192.168.1.152/resolved-conf
+    - path: /etc/NetworkManager/system-connections/bond0.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=bond0
+          type=bond
+          interface-name=bond0
+          [bond]
+          miimon=100
+          mode=802.3ad
+          [ipv4]
+          dns=10.1.30.8;
+          dns-search=brakebills.io
+          may-fail=false
+          method=auto
+    - path: /etc/NetworkManager/system-connections/bond0-slave-enp1s0f0.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=bond0-slave-enp1s0f0
+          type=ethernet
+          interface-name=enp1s0f0
+          master=bond0
+          slave-type=bond
+    - path: /etc/NetworkManager/system-connections/bond0-slave-enp1s0f1.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=bond0-slave-enp1s0f1
+          type=ethernet
+          interface-name=enp1s0f1
+          master=bond0
+          slave-type=bond

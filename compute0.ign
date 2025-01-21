@@ -19,6 +19,14 @@
   "storage": {
     "files": [
       {
+        "path": "/etc/NetworkManager/conf.d/noauto.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,%5Bmain%5D%0A%23%20Do%20not%20do%20automatic%20(DHCP%2FSLAAC)%20configuration%20on%20ethernet%20devices%0A%23%20with%20no%20other%20matching%20connections.%0Ano-auto-default%3D*%0A"
+        },
+        "mode": 420
+      },
+      {
         "path": "/etc/hostname",
         "contents": {
           "compression": "",
@@ -43,28 +51,38 @@
         "mode": 420
       },
       {
-        "path": "/etc/NetworkManager/system-connections/bond0.nmconnection",
-        "contents": {
-          "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/yyJwaqEMAwA7/kXS32+g7DkS8RDbCOGbRJpuwv+/eKyp5lhluRmnLq4rSAZN7ccoV8nfxXEOtedEg9Gyr+93FhBRdQNxxhBPTPO8S9MlGGR8/2/QraGYwxjmGKYH3cOjammA7dKT96klBbEQekadpKCO5XGoNwPz0iv7vAJAAD//6tT4wueAAAA"
-        },
-        "mode": 384
-      },
-      {
-        "path": "/etc/NetworkManager/system-connections/bond0-slave-enp1s0f0.nmconnection",
-        "contents": {
-          "compression": "",
-          "source": "data:,%5Bconnection%5D%0Aid%3Dbond0-slave-enp1s0f0%0Atype%3Dethernet%0Ainterface-name%3Denp1s0f0%0Amaster%3Dbond0%0Aslave-type%3Dbond%0A"
-        },
-        "mode": 384
-      },
-      {
         "path": "/etc/NetworkManager/system-connections/bond0-slave-eno2.nmconnection",
         "contents": {
           "compression": "",
           "source": "data:,%5Bconnection%5D%0Aid%3Dbond0-slave-eno2%0Atype%3Dethernet%0Ainterface-name%3Deno2%0Amaster%3Dbond0%0Aslave-type%3Dbond%0A"
         },
-        "mode": 384
+        "mode": 420
+      },
+      {
+        "path": "/usr/local/bin/ixgbe-reset.sh",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/5SRQW4CMQxF93MKV5XYTcgMVcUl2js4iWEiEnsUu7TcvoIplF3L7vvJ1v9ffn5ah8zrgDp1rVZJkL/2gWC1gippbhLol+hJjWq0Ao3UsBm8k31KO7wh455a13GNJUMUZoqWhQFTOo89YyUIwsmDneZFQt7d4SqJYOtHt8EENecqDIP3UDDOfUMj2KEa5Pn44irZJAnww+QMXq8gZcVQKC1biRUG7wa38W57Q70StjhBaHigkEtRl+VfyXsteKSeWIZr9Iu+FCKbqDEZVFSj9lNqubg1ftBmvLMZH7L561PfAQAA//9c0ekJ9wEAAA=="
+        },
+        "mode": 493
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "dropins": [
+          {
+            "contents": "[Service]\n# Override Execstart in main unit\nExecStart=\n# Add new Execstart with `-` prefix to ignore failure`\nExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM\n",
+            "name": "autologin-core.conf"
+          }
+        ],
+        "name": "serial-getty@ttyS0.service"
+      },
+      {
+        "contents": "[Unit]\nBefore=systemd-user-sessions.service\nWants=network-online.target\nAfter=network-online.target\nConditionPathExists=!/var/lib/ixgbe-reset\n\n[Service]\nType=oneshot\nExecStart=/usr/local/bin/ixgbe-reset.sh\nExecStartPost=/usr/bin/touch /var/lib/ixgbe-reset\nRemainAfterExit=yes\n\n[Install]\nWantedBy=multi-user.target",
+        "enabled": true,
+        "name": "ixgbe-reset.service"
       }
     ]
   }

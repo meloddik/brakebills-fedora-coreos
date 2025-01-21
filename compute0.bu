@@ -93,23 +93,11 @@ storage:
           slave-type=bond
     - path: /usr/bin/reset-ixgbe
       mode: 0644
-      contents: |
-        #!/bin/bash
-        rmmod ixgbe
-        modprobe ixgbe && systemctl restart NetworkManager
-    - path: /etc/systemd/system/reset-ixgbe.service
-      mode: 0644
-      contents: |
-        [Unit]
-        Description=Reset ixgbe module arguments
-        After=network.target
-
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/bin/reset-ixgbe
-
-        [Install]
-        WantedBy=multi-user.target
+      contents:
+        inline: |
+          #!/bin/bash
+          rmmod ixgbe
+          modprobe ixgbe && systemctl restart NetworkManager
 systemd:
   units:
     - name: reset-ixgbe.service

@@ -54,7 +54,7 @@
         "path": "/usr/local/bin/ixgbe-reset.sh",
         "contents": {
           "compression": "gzip",
-          "source": "data:;base64,H4sIAAAAAAAC/5SRQW4CMQxF93MKV5XYTcgMVcUl2js4iWEiEnsUu7TcvoIplF3L7vvJ1v9ffn5ah8zrgDp1rVZJkL/2gWC1gippbhLol+hJjWq0Ao3UsBm8k31KO7wh455a13GNJUMUZoqWhQFTOo89YyUIwsmDneZFQt7d4SqJYOtHt8EENecqDIP3UDDOfUMj2KEa5Pn44irZJAnww+QMXq8gZcVQKC1biRUG7wa38W57Q70StjhBaHigkEtRl+VfyXsteKSeWIZr9Iu+FCKbqDEZVFSj9lNqubg1ftBmvLMZH7L561PfAQAA//9c0ekJ9wEAAA=="
+          "source": "data:;base64,H4sIAAAAAAAC/1JW1E/KzNNPSizO4CrKzc1PUcisSE9KVVBTU8jNTykoyk9KRYgUVxaXpOYml+QoFKUWlyQWlSj4pZaU5xdl+ybmJaanFnERUgAIAAD//yzFXUNuAAAA"
         },
         "mode": 493
       }

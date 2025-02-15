@@ -1,0 +1,81 @@
+{
+  "ignition": {
+    "version": "3.5.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "groups": [
+          "wheel"
+        ],
+        "name": "core",
+        "passwordHash": "$1$OFBMchdV$IW6fiskmftI3AhmBpctvh.",
+        "sshAuthorizedKeys": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCv9JcP/0swLDVczhj418Jf1jkwQROA3hX3Ebs6OXQXAzBorHIpSofmTC3OP9Wh7TqStuQm65XzPEStqdokD55lZN7oYhYK4/u3Zmd5UQ8mSuAJO4Vp3GGHCWIwkbp8ke6Z3QZCuD6wHHO6qce3jbk4nCepA+P4U2iUfZ8Fn3rU3jgba7KbW9y8H2MJrY4qLfE84qg+R+hDI51fIBcAJP/fVBSVxniKRvMYn2tafxYpgXCgKnGc1eHyoCAXU5Kh3EvTVtaBPnFY1tBvb4EqRNKeZQ01/3HDqWYlaDjVtnt3BGd05pCro9CUuCyCL/gBOYe3ccr7UO7DrPh5itJKUVtgZA8WvVFFuaNveFqmP+7kBc535QAaOg5FqkGmJpSyFVt2RkNk9ErDrhYN3jn3VhXl4yAcK0KV5jBvcwjTUDzdy/bKrLvKv5c466/ynbkhoj0X8/ID36zetraKcUZ2NAlo93HM2skRVTGrS6BZKhDXzWihy4lNTNTgZFHKv/mdzo6bYz1DO+Ww7fsImKFXdn7T5xLGzYrQvjlbCZEsYtIAXudsxzorolybq2SsHQlRssd+VlcC5B9fAJDHhdZ4RlxGc0Zo25E5i7LtrIgDS3VEsoNpXlQvAvrLyubAiMwZ4Ag4/sq6C4YJWEzTqC+t7uc5vj1MogiaFsVJHnRZIhy9qQ== meloddik@watchtower"
+        ]
+      }
+    ]
+  },
+  "storage": {
+    "files": [
+      {
+        "path": "/etc/NetworkManager/conf.d/noauto.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,%5Bmain%5D%0A%23%20Do%20not%20do%20automatic%20(DHCP%2FSLAAC)%20configuration%20on%20ethernet%20devices%0A%23%20with%20no%20other%20matching%20connections.%0Ano-auto-default%3D*%0A"
+        },
+        "mode": 420
+      },
+      {
+        "path": "/etc/hostname",
+        "contents": {
+          "compression": "",
+          "source": "data:,bootstrap.ocp4.brakebills.io"
+        },
+        "mode": 420
+      },
+      {
+        "path": "/etc/modprobe.d/ixgbe.conf",
+        "contents": {
+          "compression": "",
+          "source": "data:,options%20ixgbe%20allow_unsupported_sfp%3D1"
+        },
+        "mode": 420
+      },
+      {
+        "overwrite": true,
+        "path": "/etc/systemd/resolved.conf",
+        "contents": {
+          "source": "http://192.168.1.152/resolved-conf"
+        },
+        "mode": 420
+      },
+      {
+        "path": "/usr/local/bin/ixgbe-reset.sh",
+        "contents": {
+          "compression": "gzip",
+          "source": "data:;base64,H4sIAAAAAAAC/5SRQW4CMQxF93MKV5XYTcgMVcUl2js4iWEiEnsUu7TcvoIplF3L7vvJ1v9ffn5ah8zrgDp1rVZJkL/2gWC1gippbhLol+hJjWq0Ao3UsBm8k31KO7wh455a13GNJUMUZoqWhQFTOo89YyUIwsmDneZFQt7d4SqJYOtHt8EENecqDIP3UDDOfUMj2KEa5Pn44irZJAnww+QMXq8gZcVQKC1biRUG7wa38W57Q70StjhBaHigkEtRl+VfyXsteKSeWIZr9Iu+FCKbqDEZVFSj9lNqubg1ftBmvLMZH7L561PfAQAA//9c0ekJ9wEAAA=="
+        },
+        "mode": 493
+      }
+    ]
+  },
+  "systemd": {
+    "units": [
+      {
+        "dropins": [
+          {
+            "contents": "[Service]\n# Override Execstart in main unit\nExecStart=\n# Add new Execstart with `-` prefix to ignore failure`\nExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM\n",
+            "name": "autologin-core.conf"
+          }
+        ],
+        "name": "serial-getty@ttyS0.service"
+      },
+      {
+        "contents": "[Unit]\nBefore=systemd-user-sessions.service\nWants=network-online.target\nAfter=network-online.target\nConditionPathExists=!/var/lib/ixgbe-reset\n\n[Service]\nType=oneshot\nExecStart=/usr/local/bin/ixgbe-reset.sh\nExecStartPost=/usr/bin/touch /var/lib/ixgbe-reset\nRemainAfterExit=yes\n\n[Install]\nWantedBy=multi-user.target",
+        "enabled": true,
+        "name": "ixgbe-reset.service"
+      }
+    ]
+  }
+}

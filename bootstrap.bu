@@ -1,0 +1,52 @@
+variant: fcos
+version: 1.6.0
+passwd:
+  users:
+    - name: core
+      groups:
+        - wheel
+      password_hash: $1$OFBMchdV$IW6fiskmftI3AhmBpctvh.
+      ssh_authorized_keys:
+        - "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCv9JcP/0swLDVczhj418Jf1jkwQROA3hX3Ebs6OXQXAzBorHIpSofmTC3OP9Wh7TqStuQm65XzPEStqdokD55lZN7oYhYK4/u3Zmd5UQ8mSuAJO4Vp3GGHCWIwkbp8ke6Z3QZCuD6wHHO6qce3jbk4nCepA+P4U2iUfZ8Fn3rU3jgba7KbW9y8H2MJrY4qLfE84qg+R+hDI51fIBcAJP/fVBSVxniKRvMYn2tafxYpgXCgKnGc1eHyoCAXU5Kh3EvTVtaBPnFY1tBvb4EqRNKeZQ01/3HDqWYlaDjVtnt3BGd05pCro9CUuCyCL/gBOYe3ccr7UO7DrPh5itJKUVtgZA8WvVFFuaNveFqmP+7kBc535QAaOg5FqkGmJpSyFVt2RkNk9ErDrhYN3jn3VhXl4yAcK0KV5jBvcwjTUDzdy/bKrLvKv5c466/ynbkhoj0X8/ID36zetraKcUZ2NAlo93HM2skRVTGrS6BZKhDXzWihy4lNTNTgZFHKv/mdzo6bYz1DO+Ww7fsImKFXdn7T5xLGzYrQvjlbCZEsYtIAXudsxzorolybq2SsHQlRssd+VlcC5B9fAJDHhdZ4RlxGc0Zo25E5i7LtrIgDS3VEsoNpXlQvAvrLyubAiMwZ4Ag4/sq6C4YJWEzTqC+t7uc5vj1MogiaFsVJHnRZIhy9qQ== meloddik@watchtower"
+systemd:
+  units:
+    - name: serial-getty@ttyS0.service
+      dropins:
+        - name: autologin-core.conf
+          contents: |
+            [Service]
+            # Override Execstart in main unit
+            ExecStart=
+            # Add new Execstart with `-` prefix to ignore failure`
+            ExecStart=-/usr/sbin/agetty --autologin core --noclear %I $TERM
+    - name: ixgbe-reset.service
+      enabled: true
+      contents_local: ixgbe-reset.service
+
+storage:
+  files:
+    - path: /etc/NetworkManager/conf.d/noauto.conf
+      mode: 0644
+      contents:
+        inline: |
+          [main]
+          # Do not do automatic (DHCP/SLAAC) configuration on ethernet devices
+          # with no other matching connections.
+          no-auto-default=*
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: bootstrap.ocp4.brakebills.io
+    - path: /etc/modprobe.d/ixgbe.conf
+      mode: 0644
+      contents:
+        inline: options ixgbe allow_unsupported_sfp=1
+    - path: /etc/systemd/resolved.conf
+      mode: 0644
+      overwrite: true
+      contents:
+        source: http://192.168.1.152/resolved-conf
+    - path: /usr/local/bin/ixgbe-reset.sh
+      mode: 0755
+      contents:
+        local: ixgbe-reset.sh
